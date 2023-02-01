@@ -1,13 +1,13 @@
 (ns identicon.core
   (:gen-class)
-  (:require [digest :refer [md5]])
+  (:require [identicon.digest :refer [md5]])
   (:require [clojure.string :as str])
   (:import java.io.File)
   (:import java.awt.Color)
   (:import java.awt.image.BufferedImage)
   (:import javax.imageio.ImageIO)
   )
-;;(use 'identicon.digest)
+;;(use 'identicon.digest :refer [md5])
 (def tiles-per-side 6)
 (def total-tiles (* tiles-per-side tiles-per-side))
 (defn- get-color
@@ -95,6 +95,9 @@
         (draw-mirror-tile draw tile-size pos)
         )
       )
+    (if (> (count bools) 1)
+      (draw-it draw tile-size (inc pos) (rest bools))
+      )
     )
   )
 (defn- file-name
@@ -115,7 +118,7 @@
   [identifier size]
   (let
       [tile-size (quot size tiles-per-side)
-       md5 (digest/md5 identifier)
+       md5 (md5 identifier)
        icon (BufferedImage. size size BufferedImage/TYPE_INT_RGB)
        [r g b] (get-color (first (to-numbers md5)))
        color (Color. r g b)
@@ -132,4 +135,4 @@
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (generate "ben lim" 100))

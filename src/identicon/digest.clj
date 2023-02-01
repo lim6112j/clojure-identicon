@@ -8,4 +8,5 @@
         raw (.digest algorithm (.getBytes s))
         sig (.toString (BigInteger. 1 raw) 16)
         padding (apply str (repeat (- size (count sig)) "0"))]
+    (println (str padding sig))
     (str padding sig)))
